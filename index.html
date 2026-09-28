@@ -18,6 +18,7 @@
   ══════════════════════════════════════════════════════
 -->
 <link rel="icon" type="image/png" href="assets/NMCT.png">
+<link rel="preload" as="image" href="assets/NMCT.png" type="image/png" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=PT+Sans:wght@400;700&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -27,14 +28,15 @@
     --red-800:#5E1620;
     --red-700:#7E1E2B;
     --red-600:#96303E;
-    --gold-200:#E9CF7C;
-    --gold-400:#C9A227;
-    --gold-600:#A8842C;
-    --gold-700:#8A6B1F;
-    --ivory:#F8F2E4;
-    --ivory-2:#F1E8D3;
-    --ink:#33291F;
-    --ink-soft:#5C5040;
+    --gold-200:#F3D98A;
+    --gold-400:#D2AC60;
+    --gold-600:#A9792F;
+    --gold-700:#8F5F20;
+    --wine-text:hsl(352, 62%, 23%);
+    --ivory:#FAF4E8;
+    --ivory-2:#F7EFDF;
+    --ink:#342B26;
+    --ink-soft:#3C332D;
     --serif:'PT Serif',Georgia,'Times New Roman',serif;
     --display:'Playfair Display',Georgia,serif;
     --sans:'PT Sans','Segoe UI',Arial,sans-serif;
@@ -47,7 +49,7 @@
     color:var(--ink);
     background-color:var(--red-800);
     background-image:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Cpath d='M18 7 L27 18 L18 29 L9 18 Z' fill='none' stroke='%23E9CF7C' stroke-opacity='0.16'/%3E%3Cpath d='M18 13.5 L22.5 18 L18 22.5 L13.5 18 Z' fill='%23E9CF7C' fill-opacity='0.10'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Cpath d='M18 7 L27 18 L18 29 L9 18 Z' fill='none' stroke='%23D2AC60' stroke-opacity='0.10'/%3E%3Cpath d='M18 13.5 L22.5 18 L18 22.5 L13.5 18 Z' fill='%23D2AC60' fill-opacity='0.06'/%3E%3C/svg%3E"),
       radial-gradient(1100px 700px at 50% -8%, #8E2737 0%, rgba(142,39,55,0) 62%);
     background-size:36px 36px, auto;
     background-attachment:fixed;
@@ -61,9 +63,13 @@
   .dust{position:fixed; inset:0; z-index:60; pointer-events:none; overflow:hidden}
   .mote{
     position:absolute; bottom:-12px; border-radius:50%;
-    background:radial-gradient(circle at 35% 35%, #F4E3AC, var(--gold-400) 70%);
-    box-shadow:0 0 6px rgba(233,207,124,.8);
-    animation:mote-float linear infinite;
+    background:radial-gradient(circle at 35% 35%, #FFF0B8, var(--gold-400) 70%);
+    box-shadow:0 0 6px rgba(210,172,96,.8);
+    animation:mote-float linear infinite, mote-twinkle 4s ease-in-out infinite;
+  }
+  @keyframes mote-twinkle{
+    0%,100%{filter:brightness(1)}
+    50%{filter:brightness(1.8)}
   }
   @keyframes mote-float{
     from{transform:translate(0,0) rotate(0deg)}
@@ -78,7 +84,7 @@
     position:fixed; inset:0; z-index:50;
     display:grid; place-items:center;
     padding:24px 16px;
-    transition:opacity .5s ease, visibility .5s;
+    transition:opacity .2s ease, visibility .2s ease;
   }
   body.is-revealed .stage{opacity:0; visibility:hidden; pointer-events:none}
   .stage-inner{
@@ -105,6 +111,11 @@
   /* ── Дугтуйнаас гарах урилгын нүүр ── */
   .envelope-stage{
     --envelope-width:min(760px,94vw,calc((100svh - 170px) * 1.488));
+    --flap-duration:1.05s;
+    --seal-duration:.9s;
+    --letter-delay:.35s;
+    --ray-duration:.42s;
+    --reveal-buffer:.12s;
     --letter-open-scale:1.05;
     --letter-shift:calc(clamp(24px,5vw,64px) - 50svh + 45.5cqw + 5px);
     width:var(--envelope-width);
@@ -112,8 +123,20 @@
   }
   .envelope-stage::before{
     content:""; position:absolute; z-index:0; inset:5% -12%;
-    background:radial-gradient(ellipse at center, rgba(233,207,124,.24), rgba(233,207,124,0) 70%);
+    background:radial-gradient(ellipse at center, rgba(210,172,96,.24), rgba(210,172,96,0) 70%);
     pointer-events:none;
+  }
+  .envelope-wrap::after{
+    content:""; position:absolute; z-index:3; inset:0;
+    pointer-events:none; opacity:0; mix-blend-mode:screen;
+    background:linear-gradient(112deg, transparent 42%, rgba(243,217,138,0) 47%, rgba(243,217,138,.76) 50%, rgba(243,217,138,0) 54%, transparent 58%);
+    transform:translateX(-35%) skewX(-12deg);
+  }
+  body.is-open .envelope-wrap::after{animation:envelope-ray var(--ray-duration) ease-out both}
+  @keyframes envelope-ray{
+    0%{opacity:0; transform:translateX(-35%) skewX(-12deg) scaleY(.82)}
+    28%{opacity:.95}
+    100%{opacity:0; transform:translateX(35%) skewX(-12deg) scaleY(1.08)}
   }
   body.is-open .stage-hint{opacity:0; transition:opacity .4s}
 
@@ -125,20 +148,22 @@
     position:relative; width:100%; aspect-ratio:640/430;
     transform-style:preserve-3d;
     border-radius:7px;
-    outline:1px solid rgba(233,207,124,.5); outline-offset:5px;
-    filter:drop-shadow(0 30px 44px rgba(15,2,5,.72)) drop-shadow(0 0 26px rgba(201,162,39,.32));
+    outline:1px solid rgba(210,172,96,.5); outline-offset:5px;
+    filter:drop-shadow(0 30px 44px rgba(15,2,5,.72)) drop-shadow(0 0 26px rgba(210,172,96,.32));
     cursor:pointer;
   }
-  body:not(.is-open) .envelope{animation:envelope-float 5.5s ease-in-out infinite}
+  body:not(.is-open) .envelope{animation:envelope-float 7s ease-in-out infinite; transition:filter .6s ease}
+  body:not(.is-open) .envelope:hover{filter:drop-shadow(0 36px 52px rgba(15,2,5,.78)) drop-shadow(0 0 36px rgba(210,172,96,.55))}
   @keyframes envelope-float{
     0%,100%{transform:translateY(0) rotate(0)}
-    50%{transform:translateY(-5px) rotate(-.35deg)}
+    30%{transform:translateY(-6px) rotate(.4deg)}
+    68%{transform:translateY(2px) rotate(-.45deg)}
   }
   .env-back,.env-front,.flap,.letter-mini{position:absolute}
   .env-back{
     inset:0; z-index:1;
     background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46' viewBox='0 0 46 46'%3E%3Cpath d='M23 9 L37 23 L23 37 L9 23 Z' fill='none' stroke='%23E9CF7C' stroke-opacity='0.20'/%3E%3C/svg%3E") 0 0/46px 46px,
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46' viewBox='0 0 46 46'%3E%3Cpath d='M23 9 L37 23 L23 37 L9 23 Z' fill='none' stroke='%23D2AC60' stroke-opacity='0.20'/%3E%3C/svg%3E") 0 0/46px 46px,
       linear-gradient(180deg, #6B1B27, #43101A);
     border:2px solid var(--gold-400);
     border-radius:6px;
@@ -147,7 +172,7 @@
   .env-front{
     inset:0; z-index:3;
     background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46' viewBox='0 0 46 46'%3E%3Cpath d='M23 9 L37 23 L23 37 L9 23 Z' fill='none' stroke='%23E9CF7C' stroke-opacity='0.14'/%3E%3C/svg%3E") 0 0/46px 46px,
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46' viewBox='0 0 46 46'%3E%3Cpath d='M23 9 L37 23 L23 37 L9 23 Z' fill='none' stroke='%23D2AC60' stroke-opacity='0.14'/%3E%3C/svg%3E") 0 0/46px 46px,
       linear-gradient(180deg, #8E2737 0%, var(--red-700) 48%, #4A1119 100%);
     border:2px solid var(--gold-400);
     border-radius:6px;
@@ -155,7 +180,7 @@
   }
   .env-front::before,.env-front::after{
     content:""; position:absolute; top:0; left:0; right:0; height:58%;
-    background:linear-gradient(180deg, rgba(233,207,124,.5), rgba(233,207,124,.08) 62%);
+    background:linear-gradient(180deg, rgba(210,172,96,.5), rgba(210,172,96,.08) 62%);
     pointer-events:none;
   }
   .env-front::before{clip-path:polygon(0 0, 50% 100%, 50% calc(100% - 1.5px), 0 2.5px)}
@@ -166,35 +191,34 @@
     display:flex; flex-direction:column; align-items:center; gap:6px;
     color:var(--gold-200); pointer-events:none;
   }
-  .env-label svg{width:clamp(30px,7cqw,44px); height:auto; filter:drop-shadow(0 0 8px rgba(233,207,124,.45))}
+  .env-label svg{width:clamp(30px,7cqw,44px); height:auto; filter:drop-shadow(0 0 8px rgba(210,172,96,.45))}
   .env-label span{
     font:700 clamp(9px,2.4cqw,12px)/1 var(--sans);
     letter-spacing:.3em; text-transform:uppercase; white-space:nowrap;
-    text-shadow:0 1px 10px rgba(233,207,124,.4);
+    text-shadow:0 1px 10px rgba(210,172,96,.4);
   }
 
   /* ── Захидал (дугтуй доторх урилга) ── */
   .letter-mini{
     left:5%; right:5%; top:4.5%; height:88%; z-index:2;
-    background:var(--ivory);
-    border:1px solid rgba(201,162,39,.75);
-    border-radius:3px;
-    box-shadow:0 6px 18px rgba(40,8,14,.35);
+    overflow:hidden;
     transform-origin:top center;
     transform:translateY(0) scale(1);
-    transition:transform 1.2s cubic-bezier(.18,.72,.22,1) .28s;
-    overflow:hidden;
+    transition:box-shadow 1.2s ease var(--letter-delay);
+    will-change:transform;
   }
-  .letter-mini::before{
-    content:""; position:absolute; inset:4%;
-    border:1px solid rgba(168,132,44,.55); pointer-events:none;
+  .letter-card{
+    width:100%; max-width:none; margin:0;
+    transform-origin:top center;
   }
-  body.is-open .letter-mini{animation:letter-rise 1.2s cubic-bezier(.18,.72,.22,1) .28s both}
-  @keyframes letter-rise{
-    0%,22%{z-index:2; transform:translateY(0) scale(1)}
-    23%{z-index:4}
-    72%{transform:translateY(calc(var(--letter-shift) - 8px)) scale(var(--letter-open-scale)) rotate(-.5deg)}
-    100%{z-index:4; transform:translateY(var(--letter-shift)) scale(var(--letter-open-scale)) rotate(-.5deg)}
+  .letter-card .card-foot{margin-top:36px}
+  .letter-card :is(.card-logo,h1,.divider,.salutation,.lede,.details,.card-foot){animation:none !important}
+  body.is-open .letter-mini{
+    opacity:1;
+    visibility:visible;
+    animation:none;
+    transform:none;
+    transition:none;
   }
   .lm-inner{
     position:absolute; inset:7% 8%;
@@ -202,56 +226,55 @@
     color:var(--ink);
   }
   .school-logo{
-    display:flex; align-items:center; justify-content:center; gap:8px;
-    margin:0 0 1.25cqw; color:var(--red-700);
+    display:flex; align-items:center; justify-content:center;
+    margin:0 0 1.25cqw; color:var(--gold-700);
   }
   .school-logo-mark{
-    width:clamp(32px,8cqw,54px); height:auto; display:block; flex:0 0 auto;
+    width:clamp(58px,15cqw,96px); height:auto; display:block; flex:0 0 auto;
   }
-  .school-logo-name{
-    text-align:left; font:700 clamp(6px,1.25cqw,9px)/1.12 var(--sans);
-    letter-spacing:.08em; color:var(--red-800); white-space:nowrap;
-  }
-  .school-logo-name small{display:block; margin-top:2px; font-size:1em; letter-spacing:.08em; color:inherit}
+  .school-logo-name{display:none}
   .lm-inner .emblem-wrap{margin:0 0 1cqw; line-height:0}
   .lm-inner .emblem{width:min(52px,9cqw); height:auto}
   .lm-eyebrow{
     margin:0 0 1.2cqw;
     font:700 clamp(8px,1.8cqw,12px)/1 var(--sans); letter-spacing:.28em; text-transform:uppercase;
-    color:var(--gold-700);
+    color:var(--wine-text);
   }
   .lm-title{
     margin:0; font-family:var(--display); font-weight:700;
-    font-size:clamp(20px,5.4cqw,40px); line-height:1.12; color:var(--red-700);
+    font-size:clamp(20px,5.4cqw,40px); line-height:1.12;
+    background:linear-gradient(180deg,#96303E 0%,var(--wine-text) 55%,#5E1620 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 1px 0 rgba(255,244,190,.35);
   }
   .lm-title em{font-style:italic; font-weight:500}
   .lm-inner .lm-rule{width:min(260px,72%); margin:1.4cqw auto 1.8cqw}
   .lm-inner .lm-rule svg{display:block; width:100%; height:auto}
-  .lm-salutation{margin:0 0 .8cqw; color:var(--ink-soft); font:italic clamp(9px,2.1cqw,15px)/1.35 var(--serif)}
+  .lm-salutation{margin:0 0 .8cqw; color:var(--ink-soft); font:700 clamp(9px,2.1cqw,15px)/1.35 var(--serif)}
   .lm-copy{max-width:none; margin:0 auto; font:400 clamp(8px,1.85cqw,13px)/1.45 var(--serif); color:var(--ink)}
+  .lm-copy span{display:block}
 
   /* ── Хавтан + лаан тэмдэг ── */
   .flap{
     left:0; right:0; top:0; height:56%; z-index:4;
     transform-origin:top center;
     background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46' viewBox='0 0 46 46'%3E%3Cpath d='M23 9 L37 23 L23 37 L9 23 Z' fill='none' stroke='%23E9CF7C' stroke-opacity='0.17'/%3E%3C/svg%3E") 0 0/46px 46px,
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46' viewBox='0 0 46 46'%3E%3Cpath d='M23 9 L37 23 L23 37 L9 23 Z' fill='none' stroke='%23D2AC60' stroke-opacity='0.17'/%3E%3C/svg%3E") 0 0/46px 46px,
       linear-gradient(180deg, #631622 0%, #87242F 100%);
     clip-path:polygon(0 0, 100% 0, 50% 100%);
-    filter:drop-shadow(0 3px 0 rgba(233,207,124,.55));
+    filter:drop-shadow(0 3px 0 rgba(210,172,96,.55));
     backface-visibility:visible;
     transform:rotateX(0deg);
-    transition:transform .95s cubic-bezier(.6,0,.3,1);
+    will-change:transform;
   }
   body.is-open .flap{
-    animation:flap-open .95s cubic-bezier(.6,0,.3,1) forwards;
+    animation:flap-open var(--flap-duration) cubic-bezier(.45,.05,.55,.95) forwards;
   }
   @keyframes flap-open{
     0%{transform:rotateX(0); z-index:4}
-    49.9%{z-index:4}
-    50%{z-index:0}
-    100%{transform:rotateX(180deg); z-index:0}
+    100%{transform:rotateX(180deg); z-index:4}
   }
+  body.is-flap-open .flap{z-index:0}
   /* ── Лаан тэмдэг (хавтангийн үзүүр дээр) ── */
   .seal{
     position:absolute; left:50%; top:56%; z-index:5;
@@ -260,19 +283,24 @@
     border:none; border-radius:50%;
     background:radial-gradient(circle at 34% 30%, var(--red-600), var(--red-700) 55%, var(--red-900));
     border:2px solid var(--gold-400);
-    box-shadow:0 4px 14px rgba(26,4,9,.6), 0 0 0 6px rgba(201,162,39,.14), 0 0 34px rgba(233,207,124,.35), inset 0 0 0 4px rgba(201,162,39,.4);
+    box-shadow:0 4px 14px rgba(26,4,9,.6), 0 0 0 6px rgba(210,172,96,.14), 0 0 34px rgba(210,172,96,.35), inset 0 0 0 4px rgba(210,172,96,.4);
     color:var(--gold-200);
     cursor:pointer;
     display:grid; place-items:center;
-    transition:transform .25s ease;
+    transition:transform .35s cubic-bezier(.22,1,.36,1);
   }
-  .seal:hover{transform:translate(-50%,-50%) scale(1.06)}
+  .seal:hover{transform:translate(-50%,-50%) scale(1.08)}
   .seal:active{transform:translate(-50%,-50%) scale(.92)}
-  body.is-open .seal{animation:seal-break .7s ease forwards; pointer-events:none}
+  body.is-open .seal{animation:seal-break var(--seal-duration) cubic-bezier(.3,0,.4,1) forwards; pointer-events:none; will-change:transform,opacity}
   @keyframes seal-break{
     0%{transform:translate(-50%,-50%) scale(1); opacity:1}
-    30%{transform:translate(-50%,-50%) scale(1.14) rotate(-4deg)}
-    100%{transform:translate(-50%,-50%) scale(1.5) rotate(6deg); opacity:0}
+    35%{transform:translate(-50%,-50%) scale(1.18) rotate(-5deg); opacity:1}
+    100%{transform:translate(-50%,-50%) scale(1.65) rotate(8deg); opacity:0}
+  }
+  body.is-open .seal::after{animation:seal-burst .85s ease-out forwards}
+  @keyframes seal-burst{
+    0%{opacity:.9; transform:scale(1)}
+    100%{opacity:0; transform:scale(2.4)}
   }
   .seal svg{width:46%; height:auto; pointer-events:none}
   .seal::after{
@@ -290,30 +318,46 @@
   /* ════════ Урилгын хуудас (нээгдсэний дараа) ════════ */
   .scene{
     display:flex; flex-direction:column; align-items:center; gap:18px;
-    padding:clamp(24px,5vw,64px) 16px clamp(32px,6vw,72px);
+    padding:clamp(28px,5vw,72px) 16px clamp(36px,6vw,80px);
     opacity:0; visibility:hidden;
-    transition:opacity .6s ease .1s, visibility .6s .1s;
+    transition:opacity .85s cubic-bezier(.22,1,.36,1) .05s, visibility .85s .05s;
   }
-  body.is-revealed .scene{opacity:1; visibility:visible}
+  body.is-revealed .scene{opacity:1; visibility:visible; transition:none}
+  .reveal-cover{display:none !important}
   .card{
-    width:min(720px,100%);
-    background:var(--ivory);
-    border:1px solid rgba(201,162,39,.75);
-    box-shadow:0 30px 70px -25px rgba(30,5,10,.65);
-    padding:10px;
+    width:min(780px,100%);
+    background:
+      linear-gradient(rgba(255,250,242,.76),rgba(255,250,242,.76)),
+      radial-gradient(circle at 20% 15%, rgba(169,121,47,.06) 0 1px, transparent 1.5px),
+      var(--ivory);
+    background-size:auto, 18px 18px, auto;
+    border:1px solid rgba(210,172,96,.68);
+    box-shadow:0 25px 70px rgba(25,5,10,.30), 0 2px 12px rgba(25,5,10,.12);
+    padding:12px;
   }
-  body.is-revealed .card{animation:invitation-unfold .9s cubic-bezier(.2,.7,.2,1) both}
-  @keyframes invitation-unfold{
-    from{clip-path:inset(0 0 calc(100% - var(--letter-preview-height,380px)) 0 round 3px)}
-    to{clip-path:inset(0)}
+  .card::before{
+    content:""; display:block; height:1px; margin:0 1px;
+    background:linear-gradient(90deg,transparent,rgba(169,121,47,.42),transparent);
+  }
+  body.is-revealed .card{animation:none; opacity:1; transform:none}
+  /* ── Урилгын агуулга ээлжлэн мандах ── */
+  body.is-revealed :is(.card-logo,h1,.divider,.salutation,.lede,.details,.card-foot){
+    animation:none !important;
+    opacity:1;
+    transform:none;
   }
   .frame{
     position:relative;
-    border:1px solid rgba(168,132,44,.55);
-    padding:clamp(34px,6vw,58px) clamp(22px,5vw,54px) clamp(28px,5vw,48px);
+    border:1px solid rgba(169,121,47,.48);
+    padding:clamp(34px,5vw,54px) clamp(28px,6vw,68px) clamp(30px,5vw,50px);
     text-align:center;
   }
-  .corner{position:absolute; width:44px; height:44px; color:var(--gold-600)}
+  .frame::before{
+    content:""; position:absolute; inset:7px;
+    border:1px solid rgba(210,172,96,.22);
+    pointer-events:none;
+  }
+  .corner{position:absolute; width:40px; height:40px; color:var(--gold-600)}
   .corner.tl{top:6px; left:6px}
   .corner.tr{top:6px; right:6px; transform:scaleX(-1)}
   .corner.bl{bottom:6px; left:6px; transform:scaleY(-1)}
@@ -323,65 +367,80 @@
   .emblem{width:52px; height:52px}
 
   /* ── Үндсэн хуудасны сургуулийн лого ── */
-  .card-logo{margin-bottom:20px}
-  .card-logo .school-logo-mark{width:clamp(52px,8vw,66px)}
-  .card-logo .school-logo-name{font-size:clamp(11px,1.5vw,13px)}
+  .card-logo{margin-bottom:10px}
+  .card-logo .school-logo-mark{width:clamp(88px,13vw,124px)}
 
   .eyebrow{
     font:700 12px/1 var(--sans);
     letter-spacing:.34em; text-transform:uppercase;
-    color:var(--gold-700); margin:0 0 16px;
+    color:var(--wine-text); margin:0 0 16px;
   }
   h1{
-    font-family:var(--display); font-weight:700;
-    font-size:clamp(30px,6vw,46px); line-height:1.12;
-    color:var(--red-700); margin:0 0 6px;
+    font-family:var(--display); font-weight:600;
+    font-size:clamp(34px,5vw,54px); line-height:1.08;
+    background:linear-gradient(180deg,#96303E 0%,var(--wine-text) 55%,#5E1620 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 1px 0 rgba(255,244,190,.35);
+    margin:0 0 6px;
   }
   h1 em{font-style:italic; font-weight:500}
 
   .divider{color:var(--gold-600); width:min(260px,80%); margin:18px auto 22px}
   .divider svg{display:block; width:100%; height:auto}
 
-  .salutation{font-style:italic; color:var(--ink-soft); font-size:17px; line-height:1.5; margin:0 0 10px}
-  .lede{font-size:17px; line-height:1.65; margin:0 auto; max-width:46ch}
+  .salutation{font-style:normal; font-weight:700; color:var(--ink-soft); font-size:16px; line-height:1.5; margin:0 0 14px; letter-spacing:.03em}
+  .lede{font-size:clamp(16px,1.6vw,18px); line-height:1.78; margin:0 auto; max-width:52ch}
 
   /* Placeholder харагдац — солих ёстой текстийг тодруулна */
   .ph{
-    color:#8A2B36;
-    background:rgba(201,162,39,.16);
-    box-shadow:0 1px 0 rgba(168,132,44,.55);
+    color:var(--gold-700);
+    background:rgba(210,172,96,.16);
+    box-shadow:0 1px 0 rgba(210,172,96,.55);
     padding:0 2px; border-radius:2px;
   }
 
   .details{
-    display:grid; grid-template-columns:1fr 1fr; gap:26px 38px;
-    text-align:left; margin-top:36px; padding-top:30px;
-    border-top:1px solid rgba(168,132,44,.35);
+    display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0;
+    text-align:left; margin-top:34px; padding-top:26px;
+    border-top:1px solid rgba(210,172,96,.35);
   }
-  .detail{display:flex; gap:14px; align-items:flex-start}
-  .detail .ico{flex:0 0 auto; width:22px; height:22px; color:var(--gold-600); margin-top:2px}
+  .detail{display:flex; gap:11px; align-items:flex-start; min-width:0; padding:0 18px}
+  .detail + .detail{border-left:1px solid rgba(169,121,47,.22)}
+  .detail .ico{flex:0 0 auto; width:23px; height:23px; color:var(--gold-600); margin-top:1px}
   .detail-label{
     font:700 11px/1 var(--sans); letter-spacing:.16em; text-transform:uppercase;
-    color:var(--gold-700); margin:0 0 6px;
+    color:var(--wine-text); margin:0 0 6px;
   }
-  .detail-value{margin:0; font-size:16px; line-height:1.55}
+  .detail-value{margin:0; font-size:16px; line-height:1.5}
   .detail-sub{margin:4px 0 0; font-size:14px; color:var(--ink-soft); line-height:1.5}
   .map-link{
-    color:var(--red-700); font:700 13px var(--sans);
-    text-decoration:none; border-bottom:1px solid rgba(126,30,43,.4);
+    display:inline-block; margin-top:8px; padding:5px 10px;
+    color:var(--wine-text); font:700 12px var(--sans);
+    text-decoration:none; border:1px solid rgba(169,121,47,.42); border-radius:8px;
+    transition:color .28s ease, background-color .28s ease, transform .28s ease, box-shadow .28s ease;
   }
-  .map-link:hover{color:var(--red-600)}
-  .detail-wide{grid-column:1/-1}
-  @media (max-width:580px){ .details{grid-template-columns:1fr} }
+  .map-link:hover{color:var(--ivory); background:var(--gold-700); transform:translateY(-2px); box-shadow:0 5px 12px rgba(143,95,32,.18)}
+  .detail-wide{grid-column:auto}
+  @media (max-width:580px){
+    .details{grid-template-columns:1fr; gap:18px}
+    .detail-wide{grid-column:auto}
+    .detail{padding:0}
+    .detail + .detail{border-left:0; padding-top:18px; border-top:1px solid rgba(169,121,47,.22)}
+    .card{padding:10px}
+    .frame{padding:clamp(30px,6vw,42px) clamp(22px,5vw,34px) clamp(28px,5vw,40px)}
+    .card-logo .school-logo-mark{width:clamp(52px,8vw,66px)}
+    h1{font-size:clamp(30px,6vw,46px)}
+    .lede{font-size:17px; line-height:1.65; max-width:46ch}
+  }
 
   .sec{
     display:flex; align-items:center; gap:16px;
     font:700 12px/1 var(--sans); letter-spacing:.22em; text-transform:uppercase;
-    color:var(--gold-700); margin:0 0 20px; text-align:center;
+    color:var(--wine-text); margin:0 0 20px; text-align:center;
   }
   .sec::before,.sec::after{content:""; flex:1; height:1px}
-  .sec::before{background:linear-gradient(90deg, transparent, rgba(168,132,44,.6))}
-  .sec::after{background:linear-gradient(90deg, rgba(168,132,44,.6), transparent)}
+  .sec::before{background:linear-gradient(90deg, transparent, rgba(210,172,96,.6))}
+  .sec::after{background:linear-gradient(90deg, rgba(210,172,96,.6), transparent)}
 
   .program{margin-top:38px}
   .program-list{
@@ -390,7 +449,7 @@
   }
   .program-list::before{
     content:""; position:absolute; left:4px; top:6px; bottom:6px;
-    border-left:1px dashed rgba(168,132,44,.6);
+    border-left:1px dashed rgba(210,172,96,.6);
   }
   .program-list li{position:relative; padding:0 0 18px 28px}
   .program-list li:last-child{padding-bottom:0}
@@ -400,7 +459,7 @@
   }
   .program-time{
     display:block; font:700 13px/1 var(--sans); letter-spacing:.1em;
-    color:var(--red-700); margin-bottom:3px;
+    color:var(--wine-text); margin-bottom:3px;
   }
   .program-item{margin:0; font-size:16px; line-height:1.5}
 
@@ -412,33 +471,47 @@
     max-width:560px; text-align:center; margin:0;
     font:400 13px/1.6 var(--sans); color:rgba(248,242,228,.72);
   }
-  .note-ph{background:rgba(233,207,124,.22); padding:0 4px; border-radius:2px}
+  .note-ph{background:rgba(210,172,96,.22); padding:0 4px; border-radius:2px}
 
-  @keyframes rise{from{opacity:0; transform:translateY(16px)} to{opacity:1; transform:none}}
+  @keyframes rise{from{opacity:0; transform:translateY(22px)} to{opacity:1; transform:none}}
 
   /* ── Хөдөлгөөн багассан үед ── */
   @media (prefers-reduced-motion:reduce){
     .mote{display:none}
     .stage-eyebrow,.stage-hint,.envelope,.envelope-wrap,
     .seal::after{animation:none !important}
-    .letter-mini,.flap{transition-duration:.25s !important; transition-delay:0s !important}
+    .letter-mini,.flap{transition:none !important}
     .letter-mini{animation:none !important}
-    body.is-open .letter-mini{z-index:4; transform:translateY(var(--letter-shift)) scale(var(--letter-open-scale)) rotate(-.5deg)}
+    .envelope-wrap::after{display:none !important; animation:none !important}
+    .stage,.scene{transform:none !important; filter:none !important; transition:none !important}
+    body.is-revealed :is(.card-logo,h1,.divider,.salutation,.lede,.details,.card-foot){animation:none !important}
+    body.is-open .letter-mini{opacity:1; visibility:visible; transform:none; animation:none}
     body.is-open .flap{animation:none; transform:rotateX(180deg); z-index:0}
     body.is-open .seal{animation:none; opacity:0; pointer-events:none}
+    body.is-open .scene{opacity:1; visibility:visible}
     .card{animation:none !important}
   }
+  body.is-direct-open .stage,
+  body.is-direct-open .scene{transition:none}
+  body.is-direct-open .reveal-cover{display:none !important}
+  body.is-direct-open .flap{animation:none !important; transform:rotateX(180deg); z-index:0}
+  body.is-direct-open .envelope-wrap::after{display:none !important; animation:none !important}
+  body.is-direct-open .letter-mini{animation:none !important; opacity:0; visibility:hidden; transform:none; z-index:2}
+  body.is-direct-open .seal{animation:none !important; opacity:0; pointer-events:none}
+  body.is-direct-open .card,
+  body.is-direct-open :is(.card-logo,h1,.divider,.salutation,.lede,.details,.card-foot){animation:none !important}
+
   @media print{
     body{background:var(--ivory); overflow:visible}
     .stage,.dust{display:none}
     .scene{opacity:1; visibility:visible; padding:0}
     .card{box-shadow:none; width:100%; animation:none !important}
+    body.is-revealed :is(.card-logo,h1,.divider,.salutation,.lede,.details,.card-foot){animation:none !important}
     .tpl-note{display:none}
   }
 </style>
 </head>
 <body>
-
 <!-- ══════════ АЛТАЛГ ТОСОНЦОР ══════════ -->
 <div class="dust" id="dust" aria-hidden="true"></div>
 
@@ -449,35 +522,97 @@
     <p class="stage-eyebrow">Танд захидал ирлээ</p>
 
 
-  <div class="envelope-stage" onclick="if(!document.body.classList.contains('is-open')){document.body.classList.add('is-open');setTimeout(function(){document.body.classList.add('is-revealed')},1550)}">
+  <div class="envelope-stage">
     <div class="envelope-wrap">
       <div class="envelope">
         <div class="env-back"></div>
 
-        <!-- Дугтуй доторх захидал (уррилгын эхний хэсэг) -->
+        <!-- Дугтуй доторх захидал: үндсэн урилгын ижил бүтэцтэй preview -->
         <div class="letter-mini" aria-hidden="true">
-          <div class="lm-inner">
-            <div class="school-logo" aria-label="Шинэ Монгол Технологийн Коллеж">
-              <img class="school-logo-mark" src="assets/NMCT.png" alt="NMCT лого">
-              <span class="school-logo-name">ШИНЭ МОНГОЛ<small>ТЕХНОЛОГИЙН КОЛЛЕЖ</small></span>
-            </div>
-            <p class="lm-title">Багш нарын баярын урилга</p>
-            <div class="lm-rule divider">
-              <svg viewBox="0 0 260 26" aria-hidden="true">
-                <g stroke="currentColor" stroke-width="1.1" fill="none">
-                  <path d="M130 3.5 142.5 13 130 22.5 117.5 13Z"/>
-                  <path d="M8 13H92M168 13H252"/>
+          <article class="card letter-card" aria-hidden="true">
+            <div class="frame">
+              <svg class="corner tl" viewBox="0 0 44 44" aria-hidden="true">
+                <g fill="none" stroke="currentColor">
+                  <path d="M3 44V15.5Q3 3 15.5 3H44" stroke-width="1.2"/>
+                  <path d="M9 44V21.5Q9 9 21.5 9H44" stroke-width=".9" opacity=".6"/>
                 </g>
-                <path d="M130 8.8 134.2 13 130 17.2 125.8 13Z" fill="currentColor"/>
-                <path d="M99 9.4 102.6 13 99 16.6 95.4 13Z" fill="currentColor"/>
-                <path d="M161 9.4 164.6 13 161 16.6 157.4 13Z" fill="currentColor"/>
-                <circle cx="4" cy="13" r="1.6" fill="currentColor"/>
-                <circle cx="256" cy="13" r="1.6" fill="currentColor"/>
+                <path d="M9.1 6.4 11.8 9.1 9.1 11.8 6.4 9.1Z" fill="currentColor"/>
               </svg>
+              <svg class="corner tr" viewBox="0 0 44 44" aria-hidden="true">
+                <g fill="none" stroke="currentColor">
+                  <path d="M3 44V15.5Q3 3 15.5 3H44" stroke-width="1.2"/>
+                  <path d="M9 44V21.5Q9 9 21.5 9H44" stroke-width=".9" opacity=".6"/>
+                </g>
+                <path d="M9.1 6.4 11.8 9.1 9.1 11.8 6.4 9.1Z" fill="currentColor"/>
+              </svg>
+              <svg class="corner bl" viewBox="0 0 44 44" aria-hidden="true">
+                <g fill="none" stroke="currentColor">
+                  <path d="M3 44V15.5Q3 3 15.5 3H44" stroke-width="1.2"/>
+                  <path d="M9 44V21.5Q9 9 21.5 9H44" stroke-width=".9" opacity=".6"/>
+                </g>
+                <path d="M9.1 6.4 11.8 9.1 9.1 11.8 6.4 9.1Z" fill="currentColor"/>
+              </svg>
+              <svg class="corner br" viewBox="0 0 44 44" aria-hidden="true">
+                <g fill="none" stroke="currentColor">
+                  <path d="M3 44V15.5Q3 3 15.5 3H44" stroke-width="1.2"/>
+                  <path d="M9 44V21.5Q9 9 21.5 9H44" stroke-width=".9" opacity=".6"/>
+                </g>
+                <path d="M9.1 6.4 11.8 9.1 9.1 11.8 6.4 9.1Z" fill="currentColor"/>
+              </svg>
+
+              <div class="school-logo card-logo" aria-label="Шинэ Монгол Технологийн Коллеж">
+                <img class="school-logo-mark" src="assets/NMCT.png" width="181" height="256" fetchpriority="high" decoding="async" alt="NMCT лого">
+                <span class="school-logo-name">ШИНЭ МОНГОЛ<small>ТЕХНОЛОГИЙН КОЛЛЕЖ</small></span>
+              </div>
+              <h1>Багш нарын баярын урилга</h1>
+              <div class="divider">
+                <svg viewBox="0 0 260 26" aria-hidden="true">
+                  <g stroke="currentColor" stroke-width="1.1" fill="none">
+                    <path d="M130 3.5 142.5 13 130 22.5 117.5 13Z"/>
+                    <path d="M8 13H92M168 13H252"/>
+                  </g>
+                  <path d="M130 8.8 134.2 13 130 17.2 125.8 13Z" fill="currentColor"/>
+                  <path d="M99 9.4 102.6 13 99 16.6 95.4 13Z" fill="currentColor"/>
+                  <path d="M161 9.4 164.6 13 161 16.6 157.4 13Z" fill="currentColor"/>
+                  <circle cx="4" cy="13" r="1.6" fill="currentColor"/>
+                  <circle cx="256" cy="13" r="1.6" fill="currentColor"/>
+                </svg>
+              </div>
+              <p class="salutation">ЭРХЭМ ХҮНДЭТ БАГШ, АЖИЛТАН ТАНАА</p>
+              <p class="lede">
+                Нэгэн зорилгын дор хамтдаа зүтгэж,<br>
+                Шинэ Монголын түүхийг хамтдаа бүтээлцэж яваа<br>
+                таныг Багш нарын баярын хүндэтгэлийн үдэшлэгт<br>
+                хүрэлцэн ирэхийг урьж байна.<br><br>
+                Инээд хөөр, дурсамж, баяр баяслаар дүүрэн<br>
+                сайхан үдшийг хамтдаа өнгөрүүлцгээе.
+              </p>
+              <section class="details" aria-label="Урилгын мэдээлэл">
+                <div class="detail">
+                  <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="3.5" y="5" width="17" height="15.5" rx="1.5"/><path d="M3.5 10h17M8 2.8V7M16 2.8V7"/>
+                  </svg>
+                  <div><p class="detail-label">Огноо</p><p class="detail-value">2026 оны 10-р сарын 02</p></div>
+                </div>
+                <div class="detail">
+                  <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="8.6"/><path d="M12 7.2V12l3.4 2"/>
+                  </svg>
+                  <div><p class="detail-label">Цаг</p><p class="detail-value">19:00-23:00</p></div>
+                </div>
+                <div class="detail detail-wide">
+                  <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 21.2S5.6 15.1 5.6 10.2a6.4 6.4 0 1 1 12.8 0c0 4.9-6.4 11-6.4 11Z"/><circle cx="12" cy="10.2" r="2.3"/>
+                  </svg>
+                  <div><p class="detail-label">Байршил</p><p class="detail-value">Танан төвийн 3 давхарт</p><a class="map-link" href="https://www.google.com/maps/place/Tanan+Center/@47.9199848,106.9282185,281m/data=!3m1!1e3!4m6!3m5!1s0x5d96923f7b74d64d:0x27df57368f3a1de0!8m2!3d47.9206556!4d106.9275452!16s%2Fg%2F11c40ly854" target="_blank" rel="noopener">Газрын зураг →</a></div>
+                </div>
+              </section>
+              <footer class="card-foot">
+                <p class="signoff">Хүндэтгэсэн,<br><span>Багш нарын баярын коммис</span></p>
+                <p class="foot-meta">Багш нарын баяр • <span>2026</span></p>
+              </footer>
             </div>
-            <p class="lm-salutation">Эрхэм хүндэт багш, ажилтан та бүхэнд —</p>
-            <p class="lm-copy">Багш нарын баярын хүлээн авалтад хүрэлцэн ирж, баярын сайхан мөчийг хамтдаа тэмдэглэхийг хүндэтгэлтэйгээр урьж байна.</p>
-          </div>
+          </article>
         </div>
 
         <div class="env-front">
@@ -540,7 +675,7 @@
       </svg>
 
       <div class="school-logo card-logo" aria-label="Шинэ Монгол Технологийн Коллеж">
-        <img class="school-logo-mark" src="assets/NMCT.png" alt="NMCT лого">
+        <img class="school-logo-mark" src="assets/NMCT.png" width="181" height="256" fetchpriority="high" decoding="async" alt="NMCT лого">
         <span class="school-logo-name">ШИНЭ МОНГОЛ<small>ТЕХНОЛОГИЙН КОЛЛЕЖ</small></span>
       </div>
 
@@ -560,10 +695,14 @@
         </svg>
       </div>
 
-      <p class="salutation">Эрхэм хүндэт багш, ажилтан та бүхэнд —</p>
+      <p class="salutation">ЭРХЭМ ХҮНДЭТ БАГШ, АЖИЛТАН ТАНАА</p>
       <p class="lede">
-        Багш нарын баярын хүлээн авалтад хүрэлцэн ирж, баярын сайхан мөчийг
-        хамтдаа тэмдэглэхийг хүндэтгэлтэйгээр урьж байна.
+        Нэгэн зорилгын дор хамтдаа зүтгэж,<br>
+        Шинэ Монголын түүхийг хамтдаа бүтээлцэж яваа<br>
+        таныг Багш нарын баярын хүндэтгэлийн үдэшлэгт<br>
+        хүрэлцэн ирэхийг урьж байна.<br><br>
+        Инээд хөөр, дурсамж, баяр баяслаар дүүрэн<br>
+        сайхан үдшийг хамтдаа өнгөрүүлцгээе.
       </p>
 
       <section class="details" aria-label="Урилгын мэдээлэл">
@@ -596,11 +735,8 @@
           </svg>
           <div>
             <p class="detail-label">Байршил</p>
-            <p class="detail-value">«Танан Центр»</p>
-            <p class="detail-sub">
-              Сүхбаатар дүүрэг, 8-р хороо, Оюутны гудамж-33, Улаанбаатар хот<br>
+            <p class="detail-value">Танан төвийн 3 давхарт</p>
               <a class="map-link" href="https://www.google.com/maps/place/Tanan+Center/@47.9199848,106.9282185,281m/data=!3m1!1e3!4m6!3m5!1s0x5d96923f7b74d64d:0x27df57368f3a1de0!8m2!3d47.9206556!4d106.9275452!16s%2Fg%2F11c40ly854" target="_blank" rel="noopener">Газрын зураг →</a>
-            </p>
           </div>
         </div>
 
@@ -641,7 +777,7 @@
       <footer class="card-foot">
         <p class="signoff">
           Хүндэтгэсэн,<br>
-          <span>Шинэ Монгол Технологийн Коллеж</span>
+          <span>Багш нарын баярын коммис</span>
         </p>
         <p class="foot-meta">Багш нарын баяр • <span >2026</span></p>
       </footer>
@@ -655,18 +791,13 @@
   var body = document.body;
   var seal = document.getElementById('seal');
   var envelopeStage = document.querySelector('.envelope-stage');
-  var invitationCard = document.querySelector('.card');
+  var invitationCard = document.querySelector('.scene .card');
   var letter = document.querySelector('.letter-mini');
-  var letterTitle = document.querySelector('.lm-title');
-  var invitationTitle = document.getElementById('inv-title');
-  var letterEyebrow = document.querySelector('.lm-eyebrow');
-  var invitationEyebrow = document.querySelector('.eyebrow');
-  var letterSalutation = document.querySelector('.lm-salutation');
-  var invitationSalutation = document.querySelector('.salutation');
-  var letterCopy = document.querySelector('.lm-copy');
-  var invitationCopy = document.querySelector('.lede');
+  var letterCard = document.querySelector('.letter-card');
+  var letterDivider = letterCard.querySelector('.divider');
   var directOpen = new URLSearchParams(location.search).has('open');
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var revealTimer;
 
   function matchLetterToInvitation(){
     var letterWidth = envelopeStage.getBoundingClientRect().width * .9;
@@ -674,25 +805,15 @@
     if (letterWidth && invitationWidth) {
       var scale = invitationWidth / letterWidth;
       envelopeStage.style.setProperty('--letter-open-scale', scale.toFixed(4));
-      envelopeStage.style.setProperty('--letter-preview-height', (letter.offsetHeight * scale).toFixed(1) + 'px');
-      [[letterEyebrow, invitationEyebrow], [letterTitle, invitationTitle], [letterSalutation, invitationSalutation], [letterCopy, invitationCopy]].filter(function(pair){ return pair[0] && pair[1]; }).forEach(function(pair){
-        var style = getComputedStyle(pair[1]);
-        pair[0].style.fontSize = (parseFloat(style.fontSize) / scale).toFixed(2) + 'px';
-        pair[0].style.lineHeight = (parseFloat(style.lineHeight) / scale).toFixed(2) + 'px';
-        var spacing = parseFloat(style.letterSpacing);
-        if (Number.isFinite(spacing)) pair[0].style.letterSpacing = (spacing / scale).toFixed(2) + 'px';
-        pair[0].style.width = (pair[1].getBoundingClientRect().width / scale).toFixed(2) + 'px';
-      });
-      var lmInner = letter.querySelector('.lm-inner');
-      if (lmInner) {
-        lmInner.style.transform = 'none';
-        var avail = lmInner.clientHeight;
-        var need = lmInner.scrollHeight;
-        if (need > avail && need > 0) {
-          lmInner.style.transformOrigin = 'top center';
-          lmInner.style.transform = 'scale(' + (avail / need).toFixed(4) + ')';
-        }
-      }
+      letterCard.style.width = (invitationWidth / scale).toFixed(2) + 'px';
+
+      var cardRect = letterCard.getBoundingClientRect();
+      var dividerRect = letterDivider.getBoundingClientRect();
+      var titleClipHeight = (dividerRect.bottom - cardRect.top) / scale;
+      var previewHeight = (letter.offsetHeight * scale).toFixed(1) + 'px';
+      envelopeStage.style.setProperty('--letter-preview-height', previewHeight);
+      invitationCard.style.setProperty('--letter-preview-height', previewHeight);
+      envelopeStage.style.setProperty('--letter-title-clip-height', Math.ceil(titleClipHeight) + 'px');
     }
   }
   matchLetterToInvitation();
@@ -709,8 +830,8 @@
       m.style.height = size + 'px';
       m.style.left = Math.random() * 100 + 'vw';
       m.style.setProperty('--dx', (Math.random() * 70 - 35) + 'px');
-      m.style.animationDuration = (9 + Math.random() * 14) + 's';
-      m.style.animationDelay = (-Math.random() * 22) + 's';
+      m.style.animationDuration = (9 + Math.random() * 14) + 's, ' + (3 + Math.random() * 3) + 's';
+      m.style.animationDelay = (-Math.random() * 22) + 's, ' + (-Math.random() * 4) + 's';
       m.style.opacity = (0.25 + Math.random() * 0.5).toFixed(2);
       dust.appendChild(m);
     }
@@ -718,13 +839,31 @@
 
   /* Дугтуй нээх */
   var opened = false;
+  function revealInvitation(){
+    if (!body.classList.contains('is-revealed')) body.classList.add('is-revealed');
+  }
+  function cssTimeToMs(value){
+    var amount = parseFloat(value);
+    if (!Number.isFinite(amount)) return 0;
+    return value.trim().endsWith('ms') ? amount : amount * 1000;
+  }
   function openInvite(){
     if (opened) return;
     opened = true;
     body.classList.add('is-open');
     seal.setAttribute('aria-expanded', 'true');
-    setTimeout(function(){ body.classList.add('is-revealed'); }, reduced ? 100 : 1550);
+    if (reduced) {
+      revealInvitation();
+      return;
+    }
   }
+  envelopeStage.addEventListener('animationend', function(event){
+    if (event.target === document.querySelector('.flap') && event.animationName === 'flap-open' && opened) {
+      if (revealTimer) window.clearTimeout(revealTimer);
+      body.classList.add('is-flap-open');
+      revealInvitation();
+    }
+  });
   seal.addEventListener('click', openInvite);
   envelopeStage.addEventListener('click', function(event){
     if (!opened && event.target && event.target.closest && event.target.closest('.envelope')) openInvite();
@@ -733,7 +872,7 @@
   /* ?open — анимейшнгүй шууд нээх */
   if (directOpen) {
     opened = true;
-    body.classList.add('is-open', 'is-revealed');
+    body.classList.add('is-open', 'is-revealed', 'is-direct-open');
     seal.setAttribute('aria-expanded', 'true');
   }
 })();
