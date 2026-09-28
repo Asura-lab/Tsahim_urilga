@@ -377,15 +377,17 @@
   }
   h1{
     font-family:var(--display); font-weight:600;
-    font-size:clamp(34px,5vw,54px); line-height:1.08;
+    font-size:clamp(34px,5vw,54px); line-height:1.18;
+    padding-bottom:.08em;
     background:linear-gradient(180deg,#96303E 0%,var(--wine-text) 55%,#5E1620 100%);
     -webkit-background-clip:text; background-clip:text; color:transparent;
     text-shadow:0 1px 0 rgba(255,244,190,.35);
-    margin:0 0 6px;
+    margin:0 0 14px;
+    position:relative; z-index:1;
   }
   h1 em{font-style:italic; font-weight:500}
 
-  .divider{color:var(--gold-600); width:min(260px,80%); margin:18px auto 22px}
+  .divider{position:relative; z-index:0; color:var(--gold-600); width:min(260px,80%); margin:18px auto 22px}
   .divider svg{display:block; width:100%; height:auto}
 
   .salutation{font-style:normal; font-weight:700; color:var(--ink-soft); font-size:16px; line-height:1.5; margin:0 0 14px; letter-spacing:.03em}
@@ -401,25 +403,25 @@
 
   .details{
     display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0;
-    text-align:left; margin-top:34px; padding-top:26px;
+    text-align:center; margin-top:34px; padding-top:26px;
     border-top:1px solid rgba(210,172,96,.35);
   }
-  .detail{display:flex; gap:11px; align-items:flex-start; min-width:0; padding:0 18px}
+  .detail{display:flex; flex-direction:column; align-items:center; min-width:0; padding:0 18px; text-align:center}
   .detail + .detail{border-left:1px solid rgba(169,121,47,.22)}
-  .detail .ico{flex:0 0 auto; width:23px; height:23px; color:var(--gold-600); margin-top:1px}
+  .detail .ico{display:none}
   .detail-label{
-    font:700 11px/1 var(--sans); letter-spacing:.16em; text-transform:uppercase;
-    color:var(--wine-text); margin:0 0 6px;
+    font:700 13px/1 var(--sans); letter-spacing:.16em; text-transform:uppercase;
+    color:var(--wine-text); margin:0 0 7px;
   }
-  .detail-value{margin:0; font-size:16px; line-height:1.5}
-  .detail-sub{margin:4px 0 0; font-size:14px; color:var(--ink-soft); line-height:1.5}
+  .detail-value{margin:0; font-size:clamp(18px,1.8vw,21px); line-height:1.5}
+  .detail-sub{margin:4px 0 0; font-size:15px; color:var(--ink-soft); line-height:1.5}
   .map-link{
     display:inline-block; margin-top:8px; padding:5px 10px;
     color:var(--wine-text); font:700 12px var(--sans);
     text-decoration:none; border:1px solid rgba(169,121,47,.42); border-radius:8px;
-    transition:color .28s ease, background-color .28s ease, transform .28s ease, box-shadow .28s ease;
+    transition:color .28s ease, background-color .28s ease, box-shadow .28s ease;
   }
-  .map-link:hover{color:var(--ivory); background:var(--gold-700); transform:translateY(-2px); box-shadow:0 5px 12px rgba(143,95,32,.18)}
+  .map-link:hover{color:var(--ivory); background:var(--wine-text); box-shadow:0 5px 12px rgba(67,16,26,.24)}
   .detail-wide{grid-column:auto}
   @media (max-width:580px){
     .details{grid-template-columns:1fr; gap:18px}
@@ -598,7 +600,7 @@
                   <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <circle cx="12" cy="12" r="8.6"/><path d="M12 7.2V12l3.4 2"/>
                   </svg>
-                  <div><p class="detail-label">Цаг</p><p class="detail-value">19:00-23:00</p></div>
+                  <div><p class="detail-label">Цаг</p><p class="detail-value">18:00-22:00</p></div>
                 </div>
                 <div class="detail detail-wide">
                   <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -724,7 +726,7 @@
           </svg>
           <div>
             <p class="detail-label">Цаг</p>
-            <p class="detail-value">19:00-23:00</p>
+            <p class="detail-value">18:00-22:00</p>
           </div>
         </div>
 
