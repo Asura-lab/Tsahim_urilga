@@ -62,6 +62,10 @@
 
   /* ════════ Алтлаг тоосонцор (орчны анимейшн) ════════ */
   .dust{position:fixed; inset:0; z-index:60; pointer-events:none; overflow:hidden}
+  .music-player{
+    position:fixed; width:1px; height:1px; opacity:0;
+    pointer-events:none;
+  }
   .mote{
     position:absolute; bottom:-12px; border-radius:50%;
     background:radial-gradient(circle at 35% 35%, #FFF0B8, var(--gold-400) 70%);
@@ -120,7 +124,7 @@
     --reveal-buffer:.12s;
     --letter-open-scale:1.05;
     --letter-shift:calc(clamp(24px,5vw,64px) - 50svh + 45.5cqw + 5px);
-    --letter-handoff-duration:1.25s;
+    --letter-handoff-duration:2.2s;
     --letter-dx:0px;
     --letter-dy:0px;
     --letter-scale:1;
@@ -544,6 +548,9 @@
 <body>
 <!-- ══════════ АЛТАЛГ ТОСОНЦОР ══════════ -->
 <div class="dust" id="dust" aria-hidden="true"></div>
+<audio class="music-player" id="music-player" autoplay muted loop preload="auto" aria-label="Урилгын хөгжим">
+  <source src="assets/bagshaa-duulaya.mp3" type="audio/mpeg">
+</audio>
 
 <!-- ══════════ ДУГТУЙН ТАЙЗ ══════════ -->
 <div class="stage" id="stage">
@@ -820,6 +827,7 @@
 (function(){
   var body = document.body;
   var seal = document.getElementById('seal');
+  var musicPlayer = document.getElementById('music-player');
   var envelopeStage = document.querySelector('.envelope-stage');
   var invitationCard = document.querySelector('.scene .card');
   var letter = document.querySelector('.letter-mini');
@@ -897,7 +905,7 @@
     }
     matchLetterToInvitation();
     body.classList.add('is-handoff');
-    var duration = 1250;
+    var duration = 3000;
     envelopeStage.style.setProperty('--letter-handoff-duration', (duration / 1000) + 's');
     if (revealTimer) window.clearTimeout(revealTimer);
     revealTimer = window.setTimeout(completeHandoff, duration + 40);
@@ -907,9 +915,27 @@
     if (!Number.isFinite(amount)) return 0;
     return value.trim().endsWith('ms') ? amount : amount * 1000;
   }
+  function startMusic(){
+    musicPlayer.volume = 0.28;
+    var playAttempt = musicPlayer.play();
+    if (playAttempt) playAttempt.catch(function(){
+      /* Browsers may block autoplay until the first interaction. */
+    });
+  }
+  function enableMusic(){
+    musicPlayer.muted = false;
+    startMusic();
+    document.removeEventListener('pointerdown', enableMusic);
+    document.removeEventListener('keydown', enableMusic);
+  }
+  musicPlayer.addEventListener('canplay', startMusic, {once:true});
+  startMusic();
+  document.addEventListener('pointerdown', enableMusic);
+  document.addEventListener('keydown', enableMusic);
   function openInvite(){
     if (opened) return;
     opened = true;
+    enableMusic();
     body.classList.add('is-open');
     seal.setAttribute('aria-expanded', 'true');
     if (reduced) {
