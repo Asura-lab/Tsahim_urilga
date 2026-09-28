@@ -1,4 +1,5 @@
 .preview/
 .vercel/
 node_modules/
+.fastembed_cache/
 .env
