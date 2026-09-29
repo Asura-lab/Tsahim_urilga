@@ -28,10 +28,10 @@
     --red-800:#5E1620;
     --red-700:#7E1E2B;
     --red-600:#96303E;
-    --gold-200:#F3D98A;
-    --gold-400:#D2AC60;
-    --gold-600:#A9792F;
-    --gold-700:#8F5F20;
+    --gold-200:#FFE08A;
+    --gold-400:#D9A83E;
+    --gold-600:#B98224;
+    --gold-700:#9A6418;
     --wine-text:#800020;
     --ivory:#FAF4E8;
     --ivory-2:#F7EFDF;
@@ -370,21 +370,18 @@
   }
   body.is-revealed .scene{opacity:1; visibility:visible; animation:none; transition:none}
   .reveal-cover{display:none !important}
+  /* ══════ Compact NMCT metallic-gold border ══════
+     A single gold edge, small corner accents, no external frame SVG. */
   .card{
     width:min(780px,100%);
-    background:
-      linear-gradient(rgba(255,250,242,.76),rgba(255,250,242,.76)),
-      radial-gradient(circle at 20% 15%, rgba(169,121,47,.06) 0 1px, transparent 1.5px),
-      var(--ivory);
-    background-size:auto, 18px 18px, auto;
-    border:1px solid rgba(210,172,96,.68);
-    box-shadow:0 25px 70px rgba(25,5,10,.30), 0 2px 12px rgba(25,5,10,.12);
-    padding:12px;
+    padding:10px;
+    background:#FFFCF7;
+    border:0;
+    box-shadow:
+      0 25px 70px rgba(25,5,10,.30),
+      0 2px 12px rgba(25,5,10,.12);
   }
-  .card::before{
-    content:""; display:block; height:1px; margin:0 1px;
-    background:linear-gradient(90deg,transparent,rgba(169,121,47,.42),transparent);
-  }
+  .card::before{display:none}
   body.is-revealed .card{animation:none; opacity:1; transform:none}
   /* ── Урилгын агуулга ээлжлэн мандах ── */
   body.is-revealed :is(.card-logo,h1,.divider,.salutation,.lede,.details,.card-foot){
@@ -392,22 +389,57 @@
     opacity:1;
     transform:none;
   }
+
   .frame{
     position:relative;
-    border:1px solid rgba(169,121,47,.48);
-    padding:clamp(34px,5vw,54px) clamp(28px,6vw,68px) clamp(30px,5vw,50px);
+    border:5px solid transparent;
+    background:
+      linear-gradient(#FFFCF7,#FFFCF7) padding-box,
+      linear-gradient(125deg,
+        #763D03 0%,
+        #D59A1F 10%,
+        #FCF7AA 20%,
+        #F6C83A 33%,
+        #BC7C11 49%,
+        #FBF273 65%,
+        #E9B22B 80%,
+        #9D5E09 100%
+      ) border-box;
+    box-shadow:0 0 0 .5px rgba(118,61,3,.12);
+    padding:clamp(30px,4vw,42px) clamp(24px,5vw,48px) clamp(28px,4vw,40px);
     text-align:center;
   }
-  .frame::before{
-    content:""; position:absolute; inset:7px;
-    border:1px solid rgba(210,172,96,.22);
+  .frame::before{display:none}
+  /* Tiny centre diamond, like the logo's centre point. */
+  .frame::after{
+    content:"";
+    position:absolute;
+    top:-4px;
+    left:50%;
+    width:7px;
+    height:7px;
+    transform:translateX(-50%) rotate(45deg);
+    background:linear-gradient(135deg,#FCF7AA,#F6C83A 46%,#9D5E09);
+    box-shadow:0 0 0 4px #FFFCF7;
     pointer-events:none;
   }
-  .corner{position:absolute; width:40px; height:40px; color:var(--gold-600)}
-  .corner.tl{top:6px; left:6px}
-  .corner.tr{top:6px; right:6px; transform:scaleX(-1)}
-  .corner.bl{bottom:6px; left:6px; transform:scaleY(-1)}
-  .corner.br{bottom:6px; right:6px; transform:scale(-1,-1)}
+  /* Reuse the existing four SVG corner marks, but much smaller. */
+  .corner{
+    display:block;
+    position:absolute;
+    width:40px;
+    height:40px;
+    color:#E9B22B;
+    opacity:.96;
+    filter:drop-shadow(0 1px 0 rgba(118,61,3,.38));
+    pointer-events:none;
+  }
+  .corner g path:nth-child(2){display:none}
+  .corner g path:first-child{stroke-width:3}
+  .corner.tl{top:6px;left:6px}
+  .corner.tr{top:6px;right:6px;transform:scaleX(-1)}
+  .corner.bl{bottom:6px;left:6px;transform:scaleY(-1)}
+  .corner.br{bottom:6px;right:6px;transform:scale(-1,-1)}
 
   .emblem-wrap{display:block; color:var(--gold-400); margin-bottom:16px}
   .emblem{width:52px; height:52px}
@@ -496,7 +528,8 @@
     .detail{padding:0}
     .detail + .detail{border-left:0; padding-top:18px; border-top:1px solid rgba(169,121,47,.22)}
     .card{padding:10px}
-    .frame{padding:clamp(30px,6vw,42px) clamp(22px,5vw,34px) clamp(28px,5vw,40px)}
+    .frame{padding:clamp(28px,5vw,34px) clamp(18px,4vw,26px) clamp(26px,5vw,34px)}
+    .corner{width:22px;height:22px}
     .card-logo .school-logo-mark{width:clamp(52px,8vw,66px)}
     h1{font-size:clamp(30px,6vw,46px)}
     .lede{font-size:17px; line-height:1.65; max-width:46ch}
@@ -616,35 +649,35 @@
           <path d="M3 44V15.5Q3 3 15.5 3H44" stroke-width="1.2"/>
           <path d="M9 44V21.5Q9 9 21.5 9H44" stroke-width=".9" opacity=".6"/>
         </g>
-        <path d="M9.1 6.4 11.8 9.1 9.1 11.8 6.4 9.1Z" fill="currentColor"/>
+        <path d="M13.5 10 17 13.5 13.5 17 10 13.5Z" fill="currentColor"/>
       </svg>
               <svg class="corner tr" viewBox="0 0 44 44" aria-hidden="true">
         <g fill="none" stroke="currentColor">
           <path d="M3 44V15.5Q3 3 15.5 3H44" stroke-width="1.2"/>
           <path d="M9 44V21.5Q9 9 21.5 9H44" stroke-width=".9" opacity=".6"/>
         </g>
-        <path d="M9.1 6.4 11.8 9.1 9.1 11.8 6.4 9.1Z" fill="currentColor"/>
+        <path d="M13.5 10 17 13.5 13.5 17 10 13.5Z" fill="currentColor"/>
       </svg>
               <svg class="corner bl" viewBox="0 0 44 44" aria-hidden="true">
         <g fill="none" stroke="currentColor">
           <path d="M3 44V15.5Q3 3 15.5 3H44" stroke-width="1.2"/>
           <path d="M9 44V21.5Q9 9 21.5 9H44" stroke-width=".9" opacity=".6"/>
         </g>
-        <path d="M9.1 6.4 11.8 9.1 9.1 11.8 6.4 9.1Z" fill="currentColor"/>
+        <path d="M13.5 10 17 13.5 13.5 17 10 13.5Z" fill="currentColor"/>
       </svg>
               <svg class="corner br" viewBox="0 0 44 44" aria-hidden="true">
         <g fill="none" stroke="currentColor">
           <path d="M3 44V15.5Q3 3 15.5 3H44" stroke-width="1.2"/>
           <path d="M9 44V21.5Q9 9 21.5 9H44" stroke-width=".9" opacity=".6"/>
         </g>
-        <path d="M9.1 6.4 11.8 9.1 9.1 11.8 6.4 9.1Z" fill="currentColor"/>
+        <path d="M13.5 10 17 13.5 13.5 17 10 13.5Z" fill="currentColor"/>
       </svg>
 
               <div class="school-logo card-logo" aria-label="Шинэ Монгол Технологийн Коллеж">
                 <img class="school-logo-mark" src="assets/NMCT.png" width="181" height="256" fetchpriority="high" decoding="async" alt="NMCT лого">
                 <span class="school-logo-name">ШИНЭ МОНГОЛ<small>ТЕХНОЛОГИЙН КОЛЛЕЖ</small></span>
               </div>
-              <h1>Багш нарын баярын урилга</h1>
+              <h1>Tech Teacher's<br>day</h1>
               <div class="divider">
                 <svg viewBox="0 0 260 26" aria-hidden="true">
                   <g stroke="currentColor" stroke-width="1.1" fill="none">
@@ -662,13 +695,13 @@
               <p class="lede">
                 Нэгэн зорилгын дор хамтдаа зүтгэж,<br>
                 Шинэ Монголын түүхийг хамтдаа бүтээлцэж яваа<br>
-                таныг Багш нарын баярын хүндэтгэлийн үдэшлэгт<br>
-                хүрэлцэн ирэхийг урьж байна.<br><br>
+                таныг Багш нарын баярын хүндэтгэлийн арга<br>
+                хэмжээнд хүрэлцэн ирэхийг урьж байна.<br><br>
                 Инээд хөөр, дурсамж, баяр баяслаар дүүрэн<br>
                 сайхан үдшийг хамтдаа өнгөрүүлцгээе.
               </p>
-              <section class="countdown" aria-label="Үдэшлэг эхлэх хүртэлх тоолол">
-                <p class="countdown-title">Үдэшлэг эхлэх хүртэл</p>
+              <section class="countdown" aria-label="Хүндэтгэлийн арга хэмжээ эхлэх хүртэлх тоолол">
+                <p class="countdown-title">Хүндэтгэлийн арга хэмжээ эхлэх хүртэл</p>
                 <div class="countdown-item"><span class="countdown-value" data-countdown="days">--</span><span class="countdown-label">Өдөр</span></div>
                 <div class="countdown-item"><span class="countdown-value" data-countdown="hours">--</span><span class="countdown-label">Цаг</span></div>
                 <div class="countdown-item"><span class="countdown-value" data-countdown="minutes">--</span><span class="countdown-label">Минут</span></div>
@@ -691,11 +724,11 @@
                   <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M12 21.2S5.6 15.1 5.6 10.2a6.4 6.4 0 1 1 12.8 0c0 4.9-6.4 11-6.4 11Z"/><circle cx="12" cy="10.2" r="2.3"/>
                   </svg>
-                  <div><p class="detail-label">Байршил</p><p class="detail-value">Танан төвийн 3 давхарт</p><a class="map-link" href="https://www.google.com/maps/place/Tanan+Center/@47.9199848,106.9282185,281m/data=!3m1!1e3!4m6!3m5!1s0x5d96923f7b74d64d:0x27df57368f3a1de0!8m2!3d47.9206556!4d106.9275452!16s%2Fg%2F11c40ly854" target="_blank" rel="noopener">Газрын зураг →</a></div>
+                  <div><p class="detail-label">Байршил</p><p class="detail-value">Танан төвийн 3 давхарт</p><a class="map-link" href="https://maps.app.goo.gl/FdNrnvRzn9YKEdsS6" target="_blank" rel="noopener">Газрын зураг →</a></div>
                 </div>
               </section>
               <footer class="card-foot">
-                <p class="signoff">Хүндэтгэсэн,<br><span>Багш нарын баярын коммис</span></p>
+                <p class="signoff">Хүндэтгэсэн,<br><span>Багш нарын баярын комисс</span></p>
                 <p class="foot-meta">Багш нарын баяр • <span>2026</span></p>
               </footer>
             </div>
@@ -736,28 +769,28 @@
           <path d="M3 44V15.5Q3 3 15.5 3H44" stroke-width="1.2"/>
           <path d="M9 44V21.5Q9 9 21.5 9H44" stroke-width=".9" opacity=".6"/>
         </g>
-        <path d="M9.1 6.4 11.8 9.1 9.1 11.8 6.4 9.1Z" fill="currentColor"/>
+        <path d="M13.5 10 17 13.5 13.5 17 10 13.5Z" fill="currentColor"/>
       </svg>
       <svg class="corner tr" viewBox="0 0 44 44" aria-hidden="true">
         <g fill="none" stroke="currentColor">
           <path d="M3 44V15.5Q3 3 15.5 3H44" stroke-width="1.2"/>
           <path d="M9 44V21.5Q9 9 21.5 9H44" stroke-width=".9" opacity=".6"/>
         </g>
-        <path d="M9.1 6.4 11.8 9.1 9.1 11.8 6.4 9.1Z" fill="currentColor"/>
+        <path d="M13.5 10 17 13.5 13.5 17 10 13.5Z" fill="currentColor"/>
       </svg>
       <svg class="corner bl" viewBox="0 0 44 44" aria-hidden="true">
         <g fill="none" stroke="currentColor">
           <path d="M3 44V15.5Q3 3 15.5 3H44" stroke-width="1.2"/>
           <path d="M9 44V21.5Q9 9 21.5 9H44" stroke-width=".9" opacity=".6"/>
         </g>
-        <path d="M9.1 6.4 11.8 9.1 9.1 11.8 6.4 9.1Z" fill="currentColor"/>
+        <path d="M13.5 10 17 13.5 13.5 17 10 13.5Z" fill="currentColor"/>
       </svg>
       <svg class="corner br" viewBox="0 0 44 44" aria-hidden="true">
         <g fill="none" stroke="currentColor">
           <path d="M3 44V15.5Q3 3 15.5 3H44" stroke-width="1.2"/>
           <path d="M9 44V21.5Q9 9 21.5 9H44" stroke-width=".9" opacity=".6"/>
         </g>
-        <path d="M9.1 6.4 11.8 9.1 9.1 11.8 6.4 9.1Z" fill="currentColor"/>
+        <path d="M13.5 10 17 13.5 13.5 17 10 13.5Z" fill="currentColor"/>
       </svg>
 
       <div class="school-logo card-logo" aria-label="Шинэ Монгол Технологийн Коллеж">
@@ -765,7 +798,7 @@
         <span class="school-logo-name">ШИНЭ МОНГОЛ<small>ТЕХНОЛОГИЙН КОЛЛЕЖ</small></span>
       </div>
 
-      <h1 id="inv-title">Багш нарын баярын урилга</h1>
+      <h1 id="inv-title">Tech Teacher's<br>day</h1>
 
       <div class="divider">
         <svg viewBox="0 0 260 26" aria-hidden="true">
@@ -785,14 +818,14 @@
       <p class="lede">
         Нэгэн зорилгын дор хамтдаа зүтгэж,<br>
         Шинэ Монголын түүхийг хамтдаа бүтээлцэж яваа<br>
-        таныг Багш нарын баярын хүндэтгэлийн үдэшлэгт<br>
-        хүрэлцэн ирэхийг урьж байна.<br><br>
+        таныг Багш нарын баярын хүндэтгэлийн арга<br>
+        хэмжээнд хүрэлцэн ирэхийг урьж байна.<br><br>
         Инээд хөөр, дурсамж, баяр баяслаар дүүрэн<br>
         сайхан үдшийг хамтдаа өнгөрүүлцгээе.
       </p>
 
-      <section class="countdown" aria-label="Үдэшлэг эхлэх хүртэлх тоолол">
-        <p class="countdown-title">Үдэшлэг эхлэх хүртэл</p>
+      <section class="countdown" aria-label="Хүндэтгэлийн арга хэмжээ эхлэх хүртэлх тоолол">
+        <p class="countdown-title">Хүндэтгэлийн арга хэмжээ эхлэх хүртэл</p>
         <div class="countdown-item"><span class="countdown-value" id="countdown-days">--</span><span class="countdown-label">Өдөр</span></div>
         <div class="countdown-item"><span class="countdown-value" id="countdown-hours">--</span><span class="countdown-label">Цаг</span></div>
         <div class="countdown-item"><span class="countdown-value" id="countdown-minutes">--</span><span class="countdown-label">Минут</span></div>
@@ -830,7 +863,7 @@
           <div>
             <p class="detail-label">Байршил</p>
             <p class="detail-value">Танан төвийн 3 давхарт</p>
-              <a class="map-link" href="https://www.google.com/maps/place/Tanan+Center/@47.9199848,106.9282185,281m/data=!3m1!1e3!4m6!3m5!1s0x5d96923f7b74d64d:0x27df57368f3a1de0!8m2!3d47.9206556!4d106.9275452!16s%2Fg%2F11c40ly854" target="_blank" rel="noopener">Газрын зураг →</a>
+              <a class="map-link" href="https://maps.app.goo.gl/FdNrnvRzn9YKEdsS6" target="_blank" rel="noopener">Газрын зураг →</a>
           </div>
         </div>
 
@@ -871,7 +904,7 @@
       <footer class="card-foot">
         <p class="signoff">
           Хүндэтгэсэн,<br>
-          <span>Багш нарын баярын коммис</span>
+          <span>Багш нарын баярын комисс</span>
         </p>
         <p class="foot-meta">Багш нарын баяр • <span >2026</span></p>
       </footer>
